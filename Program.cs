@@ -1,7 +1,18 @@
-﻿
+﻿using static DelegateProblem;
+
+#region Singleton
+
+
+var instance = SingletonThreadUnSafe.GetInstance();
+#endregion
+
+
+
+
+
 #region Delegates
 // Step 3: Take input
-using static DelegateProblem;
+
 
             Console.Write("Enter first number: ");
             int num1 = Convert.ToInt32(Console.ReadLine());
@@ -24,8 +35,6 @@ using static DelegateProblem;
             op = Divide;
             Console.WriteLine($"Division: {op(num1, num2)}");
 #endregion
-
-
 
 #region Constructor Problem
 // ConstructorProblem ctor = new ConstructorProblem();
@@ -61,6 +70,8 @@ StringProblem stringProblem = new StringProblem();
 // notification.Send("pranav", "Hi Pranav");
 
 #endregion
+
+
 #region Notification Factory
 
 
