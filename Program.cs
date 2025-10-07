@@ -1,13 +1,52 @@
-﻿using static DelegateProblem;
+﻿using System.Collections.Concurrent;
+using InterviewPrep;
+using static DelegateProblem;
 
-#region Singleton
+
+#region Asynchonus Problem
+
+        var context = new SingleThreadSynchronizationContext();
+        SynchronizationContext.SetSynchronizationContext(context);
+
+        context.Post(async _ =>
+        {
+            try
+            {
+                Console.WriteLine("Calling GetData()...");
+                var result = new AsyncProblem().GetData(); // safe sync call now
+                Console.WriteLine("Result: " + result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex);
+            }
+            finally
+            {
+                context.Complete(); // ✅ signal that no more work will come
+            }
+        }, null);
+
+        context.RunOnCurrentThread(); // Start fake UI loop
 
 
-var instance = SingletonThreadUnSafe.GetInstance();
+
+
+
 #endregion
 
 
+#region Singleton
 
+// StringProblem stringProblem1 = new StringProblem();
+
+// int[] num = { 1, 2, 3, 3, 4, 4, 5, 5, 8, 6 };
+// stringProblem1.RemoveDuplicateFromArray(num);
+
+
+// var instance = SingletonThreadUnSafe.GetInstance();
+
+//var paymentMode = PaymentFactoryType.GetPaymentMethod("Upi");
+#endregion
 
 
 #region Delegates
@@ -177,4 +216,28 @@ public interface IPayment
     void Pay();
 }
 
+#endregion
+
+
+
+#region Helper Methods
+/// <summary>
+/// A simple single-threaded synchronization context to simulate UI/ASP.NET behavior.
+/// </summary>
+public class SingleThreadSynchronizationContext : SynchronizationContext
+{
+    private readonly BlockingCollection<(SendOrPostCallback, object)> _queue =
+        new BlockingCollection<(SendOrPostCallback, object)>();
+
+    public override void Post(SendOrPostCallback d, object state)
+        => _queue.Add((d, state));
+
+    public void RunOnCurrentThread()
+    {
+        foreach (var (callback, state) in _queue.GetConsumingEnumerable())
+            callback(state);
+    }
+
+    public void Complete() => _queue.CompleteAdding();
+}
 #endregion

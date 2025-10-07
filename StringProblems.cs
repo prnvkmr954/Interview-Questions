@@ -190,7 +190,38 @@ public class StringProblem
 
         foreach (var item in sorted)
         {
-              Console.WriteLine(item.Key + "-" + item.Value);
+            Console.WriteLine(item.Key + "-" + item.Value);
         }
     }
+
+    public void RemoveDuplicateFromArray(int[] num)
+    {
+
+
+        // int[] unique = num.Distinct().ToArray();
+
+        // Console.WriteLine(string.Join(", ", unique));
+
+
+        HashSet<int> uniqueSet = new HashSet<int>(num);
+
+        int[] unique = new int[uniqueSet.Count];
+        uniqueSet.CopyTo(unique);
+
+        Console.WriteLine(string.Join(", ", unique));
+
+
+        List<int> uniques = new List<int>();
+
+        foreach (var item in num)
+        {
+            if (!unique.Contains(item))
+            {
+                uniques.Add(item);
+            }
+        }
+
+        Console.WriteLine(string.Join(", ", unique));
+    }
+
 }

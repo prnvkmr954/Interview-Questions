@@ -1,5 +1,4 @@
 
-//Thread Unsafe
 sealed class SingletonThreadUnSafe
 {
     private SingletonThreadUnSafe() { }
@@ -15,13 +14,8 @@ sealed class SingletonThreadUnSafe
 
         return _instance;
     }
-
 }
 
-
-
-
-// Thread Safe
 sealed class SingletonThreadSafe
 {
     private SingletonThreadSafe() { }
@@ -31,19 +25,17 @@ sealed class SingletonThreadSafe
 
     public static SingletonThreadSafe GetInstance()
     {
-        if (_instance == null)
+        if (_instance == null) // First check (no lock)
         {
             lock (_lock)
             {
-                if (_instance == null)
+                if (_instance == null) // Second check (with lock)
                 {
                     _instance = new SingletonThreadSafe();
                 }
             }
         }
-
+       
         return _instance;
     }
-
 }
-
